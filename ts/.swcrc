@@ -1,0 +1,26 @@
+{
+  "$schema": "https://swc.rs/schema.json",
+  "jsc": {
+    "parser": {
+      "syntax": "typescript", // Parse TypeScript
+      "tsx": false, // true if you're using React
+      "decorators": true // enable if using NestJS or decorators
+    },
+    "target": "es2024", // or "es2019" if older Node
+    "baseUrl": "./src",
+    "output": {
+      "dir": "./dist"
+    },
+    "transform": {
+      "decoratorMetadata": true // useful for NestJS
+    },
+    "loose": false
+  },
+  "module": {
+    "type": "commonjs", // or "es6" if using ES modules
+    "strict": true,
+    "noInterop": false
+  },
+  "sourceMaps": true,
+  "minify": false
+}

@@ -1,0 +1,19 @@
+{
+  "name": "ts-design-patterns",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "scripts": {
+    "build": "swc src -d dist",
+    "dev": "nodemon --watch src --ext ts,js --exec \"node -r @swc-node/register src/main.ts\""
+  },
+  "devDependencies": {
+    "@swc-node/register": "^1.11.1",
+    "@swc/cli": "^0.7.8",
+    "@swc/core": "^1.13.5",
+    "@types/node": "^24.7.1",
+    "nodemon": "^3.1.10",
+    "typescript": "^5.9.3"
+  }
+}
