@@ -10,33 +10,35 @@ class IDocument {
 
 class PDFDocument extends IDocument {}
 
-class WordDocument extends IDocument {}
+class WordDocument extends IDocument {
+  margin: number;
+}
 
 class ExcelDocument extends IDocument {}
 
 abstract class DocumentBuilder {
   document: IDocument;
-  protected setTitle(title: string) {
+  setTitle(title: string) {
     this.document.title = title;
     return this;
   }
 
-  protected setHeader(header: string) {
+  setHeader(header: string) {
     this.document.header = header;
     return this;
   }
 
-  protected setBody(bd: string) {
+  setBody(bd: string) {
     this.document.bodyContent = bd;
     return this;
   }
 
-  protected setFooter(footer: string) {
+  setFooter(footer: string) {
     this.document.footer = footer;
     return this;
   }
 
-  protected setExtension(extension: string) {
+  setExtension(extension: string) {
     this.document.extension = extension;
     return this;
   }
@@ -47,6 +49,11 @@ abstract class DocumentBuilder {
 class PDFDocumentBuilder extends DocumentBuilder {
   declare document: PDFDocument;
 
+  constructor() {
+    super();
+    this.document = new PDFDocument();
+  }
+
   export() {
     return this.document;
   }
@@ -55,7 +62,13 @@ class PDFDocumentBuilder extends DocumentBuilder {
 class WordDocumentBuilder extends DocumentBuilder {
   declare document: WordDocument;
 
-  setPageMargin() {
+  constructor() {
+    super();
+    this.document = new WordDocument();
+  }
+
+  setPageMargin(margin: number) {
+    this.document.margin = margin;
     return this;
   }
 
@@ -66,6 +79,11 @@ class WordDocumentBuilder extends DocumentBuilder {
 
 class ExcelDocumentBuilder extends DocumentBuilder {
   declare document: ExcelDocument;
+
+  constructor() {
+    super();
+    this.document = new ExcelDocument();
+  }
 
   toCSV(): string {
     return "";
@@ -82,7 +100,7 @@ type GenericDocBuilder<T extends DocType> = T extends "excel"
   ? WordDocumentBuilder
   : PDFDocumentBuilder;
 
-class DocumentClient<DT extends DocType> {
+export class DocumentClient<DT extends DocType> {
   documentBuilder: GenericDocBuilder<DT>;
 
   docType: DocType;
@@ -90,22 +108,26 @@ class DocumentClient<DT extends DocType> {
   static init<T extends DocType>(docType: T) {
     const instance = new DocumentClient<T>();
     instance.docType = docType;
-
+    let extension = "";
     switch (docType) {
       case "pdf":
         (instance.documentBuilder as PDFDocumentBuilder) =
           new PDFDocumentBuilder();
+        extension = "pdf";
         break;
       case "word":
         (instance.documentBuilder as WordDocumentBuilder) =
           new WordDocumentBuilder();
+        extension = "doc";
         break;
       case "excel":
         (instance.documentBuilder as ExcelDocumentBuilder) =
           new ExcelDocumentBuilder();
+        extension = "xlx";
         break;
     }
 
+    instance.documentBuilder.setExtension(extension);
     return instance;
   }
 
@@ -113,6 +135,3 @@ class DocumentClient<DT extends DocType> {
     return this.documentBuilder;
   }
 }
-
-const docClient = DocumentClient.init("excel");
-docClient.build().toCSV();
